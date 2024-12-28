@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowy Serenity</title>
+    <style>
+        /* General Reset */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: #1e202a;
+            color: #ffffff;
+            overflow-x: hidden;
+            text-align: center;
+        }
+        
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        header {
+            background: #2c2f3a;
+            padding: 50px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #a3d9ff;
+        }
+
+        header p {
+            font-size: 1.2em;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 25px;
+            font-size: 1em;
+            color: #1e202a;
+            background: #a3d9ff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #8bc9e4;
+        }
+
+        .content {
+            padding: 40px 20px;
+        }
+
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .section h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: #a3d9ff;
+        }
+
+        .section p {
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        footer {
+            background: #2c2f3a;
+            padding: 20px;
+            font-size: 0.9em;
+            border-top: 1px solid #444;
+        }
+
+        footer p {
+            margin: 10px 0;
+        }
+
+        .spotify-player {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Snowfall Canvas -->
+    <canvas id="snowfall"></canvas>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Welcome to Snowy Serenity</h1>
+        <p>Escape into the peaceful beauty of winter. Embrace the calm, the quiet, and the snow.</p>
+        <a href="#introduction" class="btn">Learn More</a>
+    </header>
+
+    <!-- Content Section -->
+    <div class="content">
+        <div id="introduction" class="section">
+            <h2>About Snowy Serenity</h2>
+            <p>Snowy Serenity is a space to appreciate the magic of winter—a place where snowflakes fall, nature sleeps under a white blanket, and serenity reigns supreme.</p>
+        </div>
+
+        <div class="section">
+            <h2>Winter Activities</h2>
+            <p>Take a walk in the snow, build a snowman, or simply sit by the fire and let the winter world surround you with its quiet charm.</p>
+        </div>
+
+        <div class="section">
+            <h2>Reconnect with Nature</h2>
+            <p>Experience the pristine beauty of untouched snow, frozen lakes, and the stillness of the winter forest. It's a reminder of nature's power and grace.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2024 Snowy Serenity | Designed for Boba Drro</p>
+
+        <!-- Spotify Embed -->
+        <div class="spotify-player">
+            <iframe id="spotify-player" style="border-radius:12px"
+                src="https://open.spotify.com/embed/playlist/4LDUsVSwLgJXToSkGi6Ijs?autoplay=1"
+                width="100%" height="80" frameBorder="0" allowfullscreen=""
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+            </iframe>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Snowfall -->
+    <script>
+        const canvas = document.getElementById('snowfall');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const snowflakes = [];
+        const specialSnowflakes = [];
+        const snowflakeImg = new Image();
+        snowflakeImg.src = 'snowflake.png'; // Path to your snowflake.png image
+
+        function createSnowflake() {
+            const size = Math.random() * 3 + 1;
+            snowflakes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: size,
+                speed: Math.random() * 1 + 0.5,
+                isClicked: false
+            });
+        }
+
+        function createSpecialSnowflake() {
+            const size = Math.random() * 40 + 20;
+            specialSnowflakes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: size,
+                speed: Math.random() * 1 + 0.5,
+                angle: Math.random() * 360,
+                rotationSpeed: Math.random() * 2 - 1,
+                isClicked: false
+            });
+        }
+
+        function drawSnowflake(snowflake) {
+            ctx.beginPath();
+            ctx.arc(snowflake.x, snowflake.y, snowflake.size, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+        }
+
+        function drawSpecialSnowflake(specialSnowflake) {
+            ctx.save();
+            ctx.translate(specialSnowflake.x, specialSnowflake.y);
+            ctx.rotate((specialSnowflake.angle * Math.PI) / 180);
+            ctx.drawImage(
+                snowflakeImg,
+                -specialSnowflake.size / 2,
+                -specialSnowflake.size / 2,
+                specialSnowflake.size,
+                specialSnowflake.size
+            );
+            ctx.restore();
+        }
+
+        function updateSnowflake(snowflake) {
+            snowflake.y += snowflake.speed;
+            if (snowflake.y > canvas.height) {
+                snowflake.y = -snowflake.size;
+                snowflake.x = Math.random() * canvas.width;
+            }
+        }
+
+        function updateSpecialSnowflake(specialSnowflake) {
+            specialSnowflake.y += specialSnowflake.speed;
+            specialSnowflake.angle += specialSnowflake.rotationSpeed;
+            if (specialSnowflake.y > canvas.height) {
+                specialSnowflake.y = -specialSnowflake.size;
+                specialSnowflake.x = Math.random() * canvas.width;
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            snowflakes.forEach((snowflake, index) => {
+                if (!snowflake.isClicked) {
+                    drawSnowflake(snowflake);
+                    updateSnowflake(snowflake);
+                }
+            });
+
+            specialSnowflakes.forEach((specialSnowflake, index) => {
+                if (!specialSnowflake.isClicked) {
+                    drawSpecialSnowflake(specialSnowflake);
+                    updateSpecialSnowflake(specialSnowflake);
+                }
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        canvas.addEventListener('click', (event) => {
+            const { offsetX, offsetY } = event;
+
+            snowflakes.forEach((snowflake) => {
+                const dist = Math.hypot(offsetX - snowflake.x, offsetY - snowflake.y);
+                if (dist < snowflake.size) {
+                    snowflake.isClicked = true;
+                }
+            });
+
+            specialSnowflakes.forEach((specialSnowflake) => {
+                const dist = Math.hypot(offsetX - specialSnowflake.x, offsetY - specialSnowflake.y);
+                if (dist < specialSnowflake.size) {
+                    specialSnowflake.isClicked = true;
+                }
+            });
+        });
+
+        for (let i = 0; i < 150; i++) {
+            createSnowflake();
+        }
+
+        for (let i = 0; i < 10; i++) {
+            createSpecialSnowflake();
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+
+</html>
